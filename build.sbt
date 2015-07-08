@@ -7,15 +7,18 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-  cache,
-  ws,
-  specs2 % Test,
-  "com.typesafe.play" %% "play-slick" % "1.0.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "1.0.0",
-  "com.h2database" % "h2" % "1.4.187",
-  "jp.t2v" %% "play2-auth"      % "0.14.0",
-  "jp.t2v" %% "play2-auth-test" % "0.14.0" % "test",
-  play.sbt.Play.autoImport.cache // only when you use default IdContainer
+    cache,
+    ws,
+    specs2 % Test,
+    "com.typesafe.play" %% "play-slick" % "1.0.0",
+    "com.typesafe.play" %% "play-slick-evolutions" % "1.0.0",
+    "com.h2database" % "h2" % "1.4.187",
+    "org.mindrot" % "jbcrypt" % "0.3m",
+    "org.webjars" % "bootstrap" % "3.3.4",
+    "org.webjars" %% "webjars-play" % "2.4.0-1",
+    "jp.t2v" %% "play2-auth"      % "0.14.0",
+    "jp.t2v" %% "play2-auth-test" % "0.14.0" % "test",
+    play.sbt.Play.autoImport.cache // only when you use default IdContainer
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

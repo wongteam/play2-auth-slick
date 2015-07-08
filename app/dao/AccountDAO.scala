@@ -8,29 +8,37 @@ import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfig
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
+import org.mindrot.jbcrypt.BCrypt
 
 class AccountDAO extends HasDatabaseConfig[JdbcProfile] {
-  protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+    protected val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
-  import driver.api._
+    import driver.api._
 
-  private val Accounts = TableQuery[AccountsTable]
+    private val Accounts = TableQuery[AccountsTable]
 
-  def findById(id: Long): Future[Option[Account]] =
-    db.run(Accounts.filter(_.id === id).result.headOption)
+    def authenticate( email: String, password: String ): Future[Option[Account]] = {
+        findByEmail( email ).filter( account => BCrypt.checkpw( password, account.map( _.password ).getOrElse( "" ) ) )
+    }
 
-  def all(): Future[List[Account]] = db.run(Accounts.result).map(_.toList)
+    def findByEmail( email: String ): Future[Option[Account]] =
+        db.run( Accounts.filter( _.email === email ).result.headOption )
 
-  def insert(account: Account): Future[Unit] = db.run(Accounts += account).map(_ => ())
+    def findById(id: Long): Future[Option[Account]] =
+        db.run(Accounts.filter(_.id === id).result.headOption)
 
-  private class AccountsTable(tag: Tag) extends Table[Account](tag, "account") {
+    def all(): Future[List[Account]] = db.run(Accounts.result).map(_.toList)
 
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def email = column[String]("email")
-    def password = column[String]("password")
-    def name = column[String]("name")
-    def role = column[String]("role")
+    def insert(account: Account): Future[Unit] = db.run(Accounts += account).map(_ => ())
 
-    def * = (id.?, email, password, name, role) <> (Account.tupled, Account.unapply _)
-  }
+    private class AccountsTable(tag: Tag) extends Table[Account](tag, "account") {
+
+        def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+        def email = column[String]("email")
+        def password = column[String]("password")
+        def name = column[String]("name")
+        def role = column[String]("role")
+
+        def * = (id.?, email, password, name, role) <> (Account.tupled, Account.unapply _)
+    }
 }

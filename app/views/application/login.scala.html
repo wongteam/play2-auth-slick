@@ -1,0 +1,96 @@
+@( loginForm: Form[(String, String)] )( implicit flash: Flash, l: Lang )
+@import helper._
+@import play.api.i18n.Messages
+@import play.api.Logger
+
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <!-- Google Chrome Frame support -->
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>"login"</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+        <link rel='stylesheet' href='@routes.Assets.at("jasny-bootstrap/css/jasny-bootstrap.min.css")'>
+        <style TYPE="text/css">
+            body
+            {
+                padding-bottom: 40px;
+                background-color: #eee;
+                padding-top: 60px;
+            }
+
+            .form-signin
+            {
+                max-width: 330px;
+                padding: 15px;
+                margin: 0 auto;
+            }
+
+            .form-signin .form-control
+            {
+                position: relative;
+                font-size: 16px;
+                height: auto;
+                padding: 10px;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            .form-signin .form-control:focus
+            {
+                z-index: 2;
+            }
+
+            .form-signin input[type="text"]
+            {
+                margin-bottom: -1px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .form-signin input[type="password"]
+            {
+                margin-bottom: 10px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="form-signin">
+                <legend>please_login</legend>
+                @form( routes.Application.login ) {
+
+                    @loginForm.globalError.map { error =>
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            error.message
+                        </div>
+                }
+
+                @flash.get( "success" ).map { message =>
+                        <div class="alert alert-success">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            message
+                        </div>
+                    }
+
+                    <input type="text" class="form-control" name="email" placeholder="email" id="email" value="@loginForm( "email" ).value">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="password">
+                    <button type="submit" class="btn btn-lg btn-primary btn-block" name="submit" id="loginButton">"login"</button>
+                }
+
+        </div>
+
+        </div>
+    </body>
+</html>
